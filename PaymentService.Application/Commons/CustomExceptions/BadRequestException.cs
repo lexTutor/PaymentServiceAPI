@@ -1,6 +1,6 @@
-﻿using System;
+﻿using PaymentService.Domain.Common;
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PaymentService.Application.Commons.CustomExceptions
 {
@@ -11,5 +11,11 @@ namespace PaymentService.Application.Commons.CustomExceptions
         {
 
         }
+
+        public BadRequestException(IList<Error> err, string msg): base(msg)
+        {
+            Errors = err;
+        }
+        public IList<Error> Errors { get; set; }
     }
 }

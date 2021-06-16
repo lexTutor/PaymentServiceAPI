@@ -7,10 +7,11 @@ namespace PaymentService.Domain.Common
 {
     public class Response<T>
     {
-        public Response(string message, T details = default)
+        public Response(string message, T details = default, IList<Error> error = null)
         {
             Message = message;
             Data = details;
+            Errors = error;
         }
         public Response()
         {

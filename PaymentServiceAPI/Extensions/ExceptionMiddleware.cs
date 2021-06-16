@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using PaymentService.Application.Commons.CustomExceptions;
 using PaymentService.Domain.Common;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ namespace PaymentServiceAPI.Extensions
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionMiddleware> _logger;
         private readonly IHostEnvironment _env;
+        private IList<Error> error = new List<Error>();
 
         /// <summary>
         /// ExceptionMiddleware constructor
@@ -39,6 +41,11 @@ namespace PaymentServiceAPI.Extensions
             {
                 await _next(context);
             }
+            catch(BadRequestException exc)
+            {
+                _logger.LogError(exc.StackTrace, exc.Message);
+                await ConvertException(exc, context);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.StackTrace, ex.Message);
@@ -46,23 +53,24 @@ namespace PaymentServiceAPI.Extensions
             }
         }
 
-
         //Determines the status code to return and the creates the response object in the event of an error.
         private async Task ConvertException(Exception exception, HttpContext context)
-
         {
             HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest;
             context.Response.ContentType = "application/json";
-
-            httpStatusCode = exception switch
+            switch (exception)
             {
-                BadRequestException accessViolationException => HttpStatusCode.BadRequest,
-                _ => HttpStatusCode.InternalServerError,
-            };
-
-            context.Response.StatusCode = (int)httpStatusCode;
+                case BadRequestException badRequestException:
+                    httpStatusCode = HttpStatusCode.BadRequest;
+                    error = badRequestException.Errors;
+                    break;
+                default:
+                    httpStatusCode = HttpStatusCode.InternalServerError;
+                    break;
+            }
+                    context.Response.StatusCode = (int)httpStatusCode;
             var response = _env.IsDevelopment()
-                    ? new Response<string>(exception.Message, exception.StackTrace?.ToString()).ToString()
+                    ? new Response<string>(exception.Message, exception.StackTrace?.ToString(), error).ToString()
                     : new Response<string>(exception.Message).ToString();
 
             await context.Response.WriteAsync(response);
