@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace PaymentServiceAPITest
+namespace XUnitTestProject2
 {
     public class UnitTest1
     {

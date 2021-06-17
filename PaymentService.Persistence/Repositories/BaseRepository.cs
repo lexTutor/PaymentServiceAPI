@@ -25,11 +25,10 @@ namespace PaymentService.Persistence.Repositories
             return await _entity.FindAsync(id);
         }
 
-        public async Task<T> AddAsync(T entity)
+        public async Task AddAsync(T entity)
         {
             await _entity.AddAsync(entity);
-
-            return entity;
+            return;
         }
 
         public void Update(T entity)

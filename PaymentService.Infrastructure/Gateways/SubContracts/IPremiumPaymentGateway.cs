@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PaymentService.Infrastructure.Subsidiaries.SubContracts
+namespace PaymentService.Infrastructure.Gateways.SubContracts
 {
     public interface IPremiumPaymentGateway
     {
-        Task<bool> MakePremiumPayment(RecievePaymentDto model);
+        GatewayResult MakePremiumPayment(RecievePaymentDto model);
     }
 }

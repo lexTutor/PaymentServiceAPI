@@ -18,9 +18,12 @@ namespace PaymentServiceAPI.Controllers
         {
           _paymentService =  serviceProvider.GetRequiredService<IPaymentService>();
         }
+
+        [HttpPost("make-payment")]
         public async Task<IActionResult> MakePayment(RecievePaymentDto model)
         {
-            return Ok(await _paymentService.MakePayment(model));
+            var result = await _paymentService.MakePayment(model);
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
     }
 }

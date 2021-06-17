@@ -8,6 +8,7 @@ namespace PaymentService.Domain.DataTransfer
     public class PaymentResultDTO
     {
         public string PaymentId { get; set; }
-        public PaymentStatusType PaymentStatus { get; set; }
+        public string PaymentStatus { get; set; }
+        public decimal AmountPaid { get; set; }
     }
 }

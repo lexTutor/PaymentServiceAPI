@@ -1,11 +1,11 @@
 ﻿using PaymentService.Domain.DataTransfer;
 using System.Threading.Tasks;
 
-namespace PaymentService.Infrastructure.Subsidiaries.SubContracts
+namespace PaymentService.Infrastructure.Gateways.SubContracts
 {
     public interface IExpensivePaymentGateway
     {
-        Task<bool> MakeExpensivePayment(RecievePaymentDto model);
+        GatewayResult MakeExpensivePayment(RecievePaymentDto model);
 
     }
 }

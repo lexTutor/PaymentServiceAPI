@@ -6,7 +6,7 @@ using PaymentService.Application.Contracts;
 using PaymentService.Domain.Common;
 using PaymentService.Domain.DataTransfer;
 using PaymentService.Domain.Entities;
-using PaymentService.Infrastructure.Subsidiaries.SubContracts;
+using PaymentService.Infrastructure.Gateways.SubContracts;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,7 +31,7 @@ namespace PaymentService.Infrastructure.Agreements
 
         public async Task<Response<PaymentResultDTO>> MakePayment(RecievePaymentDto model)
         {
-            var validity = await ValidateHelper.UserRegistrationValidator(model);
+            var validity = await ValidateHelper.RecievePaymentValidator(model);
             var hasValidationErrors = validity.FirstOrDefault(e => e.HasValidationErrors);
 
             if (hasValidationErrors != null)
@@ -40,7 +40,8 @@ namespace PaymentService.Infrastructure.Agreements
             }
 
             Payment paymentModel = _mapper.Map<Payment>(model);
-            PaymentStatus paymentStatus = new PaymentStatus { PaymentId = paymentModel.Id, Status = PaymentStatusType.Pending };
+            PaymentStatus paymentStatus = new PaymentStatus();
+            paymentStatus.PaymentId = paymentModel.Id;
 
             await _UOW.PaymentRepository.AddAsync(paymentModel);
             await _UOW.PaymentStatusRepository.AddAsync(paymentStatus);
@@ -51,49 +52,72 @@ namespace PaymentService.Infrastructure.Agreements
 
             if (model.Amount <= 20)
             {
-                bool result = await _cheapPaymentGateway.MakeCheapPayment(model);
-                response = UpdateAndAssignResult(result, paymentStatus);
+                GatewayResult result =  _cheapPaymentGateway.MakeCheapPayment(model);
+                response = UpdateAndAssignResult(result, paymentStatus, paymentModel);
             }
 
             else if (model.Amount <= 500)
             {
-                bool result = await _expensivePaymentGateway.MakeExpensivePayment(model);
-                response =  UpdateAndAssignResult(result, paymentStatus);
+                GatewayResult result = ExpensivePayment(model);
+                response =  UpdateAndAssignResult(result, paymentStatus, paymentModel);
                
             }
             else
             {
-                bool result = await _premiumPaymentGateway.MakePremiumPayment(model);
-                response =  UpdateAndAssignResult(result, paymentStatus);
+                GatewayResult result = PremiumPayment(model);
+                response =  UpdateAndAssignResult(result, paymentStatus, paymentModel);
             }
 
             await _UOW.SaveChangesAsync();
+
             return response;
         }
 
-        private Response<PaymentResultDTO> UpdateAndAssignResult(bool isSuccessful, PaymentStatus paymentStatus)
+        private GatewayResult ExpensivePayment(RecievePaymentDto model) 
         {
-            Response<PaymentResultDTO> response = new Response<PaymentResultDTO>();
-            PaymentResultDTO data = new PaymentResultDTO();
-            if (isSuccessful)
-            {
-                paymentStatus.Status = data.PaymentStatus = PaymentStatusType.Processed;
-                 _UOW.PaymentStatusRepository.Update(paymentStatus);
+            var result =  _expensivePaymentGateway.MakeExpensivePayment(model);
 
-                data.PaymentId = paymentStatus.Id;
-                response.IsSuccess = true;
-                response.Message = "Transaction Successful";
-                response.Data = data;
-                return response;
-                
+            if (!result.Status)
+            {
+                result =  _cheapPaymentGateway.MakeCheapPayment(model);
+            }
+            return result; 
+        }
+        private GatewayResult PremiumPayment(RecievePaymentDto model) 
+        {
+            GatewayResult result = default;
+            bool status = false;
+            int count = 0;
+
+            while (!status && count <= 2)
+            {
+                result = _premiumPaymentGateway.MakePremiumPayment(model);
+                status = result.Status;
+                count += 1;
             }
 
-            paymentStatus.Status = data.PaymentStatus = PaymentStatusType.Failed;
+            return result;
+        }
+
+        private Response<PaymentResultDTO> UpdateAndAssignResult(GatewayResult gatewayResult, PaymentStatus paymentStatus, Payment payment)
+        {
+            Response<PaymentResultDTO> response = new Response<PaymentResultDTO>();
+            PaymentResultDTO resultData = new PaymentResultDTO();
+
+            payment.PymentResultId = gatewayResult.Id;
+            _UOW.PaymentRepository.Update(payment);
+
+            paymentStatus.Status = gatewayResult.Status ? PaymentStatusType.Processed : PaymentStatusType.Failed;
             _UOW.PaymentStatusRepository.Update(paymentStatus);
 
-            data.PaymentId = paymentStatus.Id;
-            response.Message = "Transaction Failed";
-            response.Data = data;
+            resultData.PaymentStatus = gatewayResult.Status? PaymentStatusType.Processed.ToString(): PaymentStatusType.Failed.ToString();
+            resultData.PaymentId = payment.Id;
+            resultData.AmountPaid = payment.Amount;
+
+            response.Data = resultData;
+            response.IsSuccess = gatewayResult.Status;
+            response.Message = gatewayResult.Status? "Transaction Successful" : "Transaction Failed";
+
             return response;
         }
     }

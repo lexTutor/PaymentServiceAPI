@@ -2,8 +2,8 @@
 using PaymentService.Application.Commons.Mapping;
 using PaymentService.Application.Contracts;
 using PaymentService.Infrastructure.Agreements;
-using PaymentService.Infrastructure.Subsidiaries.SubAgreements;
-using PaymentService.Infrastructure.Subsidiaries.SubContracts;
+using PaymentService.Infrastructure.Gateways.SubAgreements;
+using PaymentService.Infrastructure.Gateways.SubContracts;
 using PaymentService.Persistence.Repositories;
 
 namespace PaymentService.Infrastructure

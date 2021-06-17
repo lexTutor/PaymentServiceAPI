@@ -13,17 +13,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{F48030E7-666B-4678-9155-865F1AC9683B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentServiceAPI", "PaymentServiceAPI\PaymentServiceAPI.csproj", "{F8E9D2F8-DF38-4FB0-B109-2BEDB15AC998}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentServiceAPI", "PaymentServiceAPI\PaymentServiceAPI.csproj", "{F8E9D2F8-DF38-4FB0-B109-2BEDB15AC998}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService.Infrastructure", "PaymentService.Infrastructure\PaymentService.Infrastructure.csproj", "{0D35E5E2-29D4-4E30-9AC7-E0DA70844CDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentService.Infrastructure", "PaymentService.Infrastructure\PaymentService.Infrastructure.csproj", "{0D35E5E2-29D4-4E30-9AC7-E0DA70844CDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService.Persistence", "PaymentService.Persistence\PaymentService.Persistence.csproj", "{991B0A69-5BFE-43A5-AE3A-466B63E03BA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentService.Persistence", "PaymentService.Persistence\PaymentService.Persistence.csproj", "{991B0A69-5BFE-43A5-AE3A-466B63E03BA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService.Application", "PaymentService.Application\PaymentService.Application.csproj", "{EEEE59FB-62FC-442B-BFBF-D0831F6C12AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentService.Application", "PaymentService.Application\PaymentService.Application.csproj", "{EEEE59FB-62FC-442B-BFBF-D0831F6C12AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService.Domain", "PaymentService.Domain\PaymentService.Domain.csproj", "{A0A640A1-F77F-487D-8131-E8C4319DB22E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentService.Domain", "PaymentService.Domain\PaymentService.Domain.csproj", "{A0A640A1-F77F-487D-8131-E8C4319DB22E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentServiceAPITest", "PaymentServiceAPITest\PaymentServiceAPITest.csproj", "{D4A96073-17B0-4670-AA46-8806EB598909}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentServiceAPITest", "PaymentServiceAPITest\PaymentServiceAPITest.csproj", "{D4A96073-17B0-4670-AA46-8806EB598909}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,7 +9,7 @@ namespace PaymentService.Application.Commons.Validators
 {
     public class ValidateHelper
     {
-        public static async Task<List<Error>> UserRegistrationValidator(RecievePaymentDto model)
+        public static async Task<List<Error>> RecievePaymentValidator(RecievePaymentDto model)
         {
             var validator = new RecievePaymentValidator();
             var result = await validator.ValidateAsync(model);

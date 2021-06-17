@@ -17,14 +17,13 @@ namespace PaymentService.Application.Commons.Validators
 
             RuleFor(model => model.CardHolder)
                 .Cascade(CascadeMode.Stop)
-                .NotEmpty().WithMessage("Cardhilder field is required");
+                .NotEmpty().WithMessage("Cardholder field is required");
                 
             RuleFor(model => model.CreditCardNumber)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Credit Card Number field is required")
-                .Must(ccn => ccn.Length == 16)
-                .Matches(@"[0 - 9]+")
-                .WithMessage("Credit Card Number must be valid");
+                .Must(ccn => ccn.Length == 16).WithMessage("Credit Card Number must be exactly 16 digits")
+                .Must(ValidNumber).WithMessage("Credit Card Number must be valid");
 
             RuleFor(model => model.ExpiryDate)
                 .Cascade(CascadeMode.Stop)
@@ -32,9 +31,9 @@ namespace PaymentService.Application.Commons.Validators
                 .Must(ValidDate).WithMessage("Card has expired");
 
             RuleFor(model => model.SecurityCode)
-                .MaximumLength(3)
-                .MinimumLength(3)
-                .WithMessage("Security code must have exactly three digits");
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty().WithMessage("SecurityCode field is required")
+                .Must(ccn => ccn.Length == 3).WithMessage("Security Number must be exactly 3 digits");
         }
 
         private bool ValidDate(DateTime date)
@@ -45,6 +44,11 @@ namespace PaymentService.Application.Commons.Validators
             }
 
             return true;
+        }
+
+        private bool ValidNumber(string ccn)
+        {
+            return decimal.TryParse(ccn, out _);
         }
     }
 }
