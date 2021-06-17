@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace PaymentService.Application.Contracts
 {
+    /// <summary>
+    /// A Contract to enable payments to be made to external services
+    /// </summary>
     public interface IPaymentService
     {
         Task<Response<PaymentResultDTO>> MakePayment(RecievePaymentDto model);

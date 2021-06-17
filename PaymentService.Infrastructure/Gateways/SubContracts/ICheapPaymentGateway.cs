@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace PaymentService.Infrastructure.Gateways.SubContracts
 {
+    /// <summary>
+    /// Payment Contract foe cheap payments less than $21
+    /// </summary>
     public interface ICheapPaymentGateway
     {
         GatewayResult MakeCheapPayment(RecievePaymentDto model);

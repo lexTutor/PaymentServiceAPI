@@ -29,6 +29,11 @@ namespace PaymentService.Infrastructure.Agreements
             _mapper = serviceProvider.GetRequiredService<IMapper>();
         }
 
+        /// <summary>
+        /// Enables Calls the external service to make the required payments
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task<Response<PaymentResultDTO>> MakePayment(RecievePaymentDto model)
         {
             var validity = await ValidateHelper.RecievePaymentValidator(model);
@@ -73,6 +78,11 @@ namespace PaymentService.Infrastructure.Agreements
             return response;
         }
 
+        /// <summary>
+        /// Calls the expensive payment service and returns the generated result.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         private GatewayResult ExpensivePayment(RecievePaymentDto model) 
         {
             var result =  _expensivePaymentGateway.MakeExpensivePayment(model);
@@ -83,6 +93,12 @@ namespace PaymentService.Infrastructure.Agreements
             }
             return result; 
         }
+
+        /// <summary>
+        /// Calls the premium Payment service and returns the generated result.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         private GatewayResult PremiumPayment(RecievePaymentDto model) 
         {
             GatewayResult result = default;
@@ -99,6 +115,13 @@ namespace PaymentService.Infrastructure.Agreements
             return result;
         }
 
+        /// <summary>
+        /// Updates the Payment and PaymentStatus tables and creates the response object to be returned from the result of the external service call
+        /// </summary>
+        /// <param name="gatewayResult"></param>
+        /// <param name="paymentStatus"></param>
+        /// <param name="payment"></param>
+        /// <returns></returns>
         private Response<PaymentResultDTO> UpdateAndAssignResult(GatewayResult gatewayResult, PaymentStatus paymentStatus, Payment payment)
         {
             Response<PaymentResultDTO> response = new Response<PaymentResultDTO>();

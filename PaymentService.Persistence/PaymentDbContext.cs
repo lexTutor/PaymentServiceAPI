@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PaymentService.Persistence
 {
@@ -42,6 +44,28 @@ namespace PaymentService.Persistence
                     }
                 }
             }
+        }
+
+        //Overrides the SaveChangesAsync method to enable setting the created and updatedAt fields as required
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var entries = ChangeTracker
+                .Entries()
+                .Where(entry => entry.Entity is BaseEntity && (
+                        entry.State == EntityState.Added
+                        || entry.State == EntityState.Modified));
+
+            foreach (var entityEntry in entries)
+            {
+                ((BaseEntity)entityEntry.Entity).UpdatedAt = DateTime.Now;
+
+                if (entityEntry.State == EntityState.Added)
+                {
+                    ((BaseEntity)entityEntry.Entity).CreatedAt = DateTime.Now;
+                }
+            }
+
+            return await base.SaveChangesAsync();
         }
     }
 }
