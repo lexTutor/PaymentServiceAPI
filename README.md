@@ -11,5 +11,6 @@
 ##### [Link to the documentation](https://docs.google.com/document/d/1BzDBQ95DrE0_ioyN739GBZbTNBpiR1gPROw97bNyiNk/edit?usp=sharing)
 
 ##### To run this project locally
-##### 1) clone it into your device
+##### 1) Clone it into your device.
+##### 3) Open in Visual studio or VS Code.
 ##### 2) Run the app either in debug mode or in release mode.
